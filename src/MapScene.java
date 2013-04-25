@@ -1,7 +1,31 @@
 import java.awt.*;
 import java.awt.Graphics2D;
 import javax.swing.event.ChangeListener;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.util.*;
 
+import javax.swing.*; 
+import javax.swing.event.*; 
+import javax.swing.text.*; 
+import javax.swing.border.*; 
+import javax.swing.colorchooser.*; 
+import javax.swing.filechooser.*; 
+import javax.accessibility.*; 
+import javax.imageio.*;
+
+import java.awt.*; 
+import java.awt.image.*; 
+import java.awt.event.*; 
+import java.beans.*; 
+import java.util.*; 
+import java.io.*; 
+import java.applet.*; 
+import java.net.*;
+import java.awt.geom.Line2D;
 
 /**
  * This class is where you keep track of all your locations and edges
@@ -15,6 +39,8 @@ public class MapScene implements Scene {
 
   private Point _lineStart;
   private Point _lineEnd;
+   private Point _creatPoint;
+ private int _move=0;
   private double totalDistance;
   public Point upperLeftScroll;
   public boolean directions = false;
@@ -36,6 +62,45 @@ public class MapScene implements Scene {
   {
    _image = image;
   }
+   public static int count=0;
+ public static int pNum=0;
+ private boolean drawingPath=false;
+
+ public class path{
+  //public Point _lineStart;
+  public location _statPoint;
+  public location _endPoint;
+  //public Point _lineEnd;
+  public path(location loc1,location loc2)
+  {
+   this._statPoint=loc1;
+   this._endPoint = loc2;
+
+  } 
+
+ }
+
+ public class location {
+  public Point pt;
+  public String name;
+  public int id;
+
+  public location(int i,Point p)
+  {
+   this.id=i;
+   this.pt = p;
+
+  } 
+
+ }
+
+ public void print(Point p) {
+
+
+ }
+
+ public static location[] loc = new location[1000];
+ public static path [] line = new path[10000];
 
   /**
    * Call this method whenever something in the map has changed that
@@ -55,8 +120,8 @@ public class MapScene implements Scene {
     g.drawImage(_image, 0, 0, null);
 
     //Update Lines
-    g.setColor(Color.BLUE);
-    g.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+   // g.setColor(Color.BLUE);
+   // g.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
     
     if(directions)
     {
@@ -74,79 +139,40 @@ public class MapScene implements Scene {
      g.setFont(new Font("TimesRoman", Font.BOLD, 15));
      g.drawString("Total Distance of MST: " + totalDistance + " feet", upperLeftScroll.x,upperLeftScroll.y+20);
     }
-    
-    if (_lineStart != null && _lineEnd != null) 
-    {
-     g.drawLine(_lineStart.x, _lineStart.y, _lineEnd.x, _lineEnd.y);
-    }
-    
-    if(MapEditor.displayPaths.isSelected())
-    {
-     //for(Path p : MapEditor.paths)
-     for(int i = 0; i < MapEditor.paths.size(); i+=2)
-     {
-      Path p = MapEditor.paths.get(i);
-      if(p.getStart() != null && p.getEnd() != null)
-      {
-       if(p.isSelected)
-       {
-        g.setColor(Color.YELLOW);
-       }
-       else if(p.isDirectionEnabled)
-       {
-        g.setColor(Color.GREEN);
-       }
-       else if(p.getStart().beingModified || p.getEnd().beingModified)
-       {
-        g.setColor(Color.PINK);
-       }
-       else if(p.isMSTEnabled)
-       {
-        g.setColor(Color.MAGENTA);
-       }
-       else
-       {
-        g.setColor(Color.BLUE);
-       }
-       g.drawLine(p.getStart().getX(),p.getStart().getY(),p.getEnd().getX(),p.getEnd().getY());
+     // Draw the line
+  g.setColor(Color.RED);
+  //g.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+  //if (_creatPoint != null||_move!=0){
+  for (int i= 0 ; i<count;i++){
+   if(loc[i].pt!=null){
+    g.fillOval(loc[i].pt.x - SIZE/2, 
+      loc[i].pt.y - SIZE/2, 
+      SIZE, SIZE);
 
-      }
-     }
+   }
+
+
+   //}
+ }
+ g.setColor(Color.BLUE);
+ 
+    if (_lineStart != null && _lineEnd != null&&MapEditor.mode==3&&drawingPath) {
+    g.drawLine(_lineStart.x, _lineStart.y, _lineEnd.x, _lineEnd.y);
+
     }
-    
-    //Update points
-    if(MapEditor.displayVertices.isSelected())
-    {
-  for(Vertex v : MapEditor.points)
-  {
-   if(v.isSelected)
-   {
-    g.setColor(Color.RED);
-   }
-   else if(v.beingModified)
-   {
-    g.setColor(Color.PINK);
-   }
-   else
-   {
-    g.setColor(Color.RED);
-   }
-      g.fillOval((int) v.getX() - SIZE/2, (int) v.getY() - SIZE/2, SIZE, SIZE);
-      if(MapEditor.printNames.isSelected())
-      {
-       g.setColor(Color.BLACK);
-       g.setFont(new Font("TimesRoman", Font.BOLD, 20));
-       g.drawString(v.getName(), (int) v.getX()-(v.getName().length()/2 * SIZE/4)-5, (int) v.getY()-10);
-      }
+  
+ for (int i=0;i<pNum;i++){
+  if (line[i]._statPoint!=null&&line[i]._endPoint!=null){
+   g.drawLine(line[i]._statPoint.pt.x, line[i]._statPoint.pt.y, line[i]._endPoint.pt.x, line[i]._endPoint.pt.y);
   }
-    }
-    
+ }
     
   }
 
 
   public void mouseMoved()
   {
+    
    changeNotify(); 
   }
   
@@ -166,26 +192,190 @@ public class MapScene implements Scene {
   
   public void mousePressed(Point p) {
     // Mark the beginning of the line
-    _lineEnd = null;
-    _lineStart = p;
+    //_lineEnd = null;
+    //_lineStart = p;
+    // Mark the beginning of the line
+  if (MapEditor.mode==1){
+   _move=-1;
+   for (int i= 0 ; i<count;i++){
+    if (loc[i].pt!=null&&equalPoint(p,loc[i].pt)){
+     System.out.println("already have"+p);
+     _move=i;
+     return;
+    }
+
+   }
+   loc[count] = new location (count,p);
+
+   System.out.println(loc[count].id+"  "+loc[count].pt);
+   count++;
+   _creatPoint =p;
+
+  }
+  if (MapEditor.mode==3){
+
+   for (int i= 0 ; i<count;i++){
+    if (loc[i].pt!=null&&equalPoint(p,loc[i].pt)){
+     _lineEnd = null;
+     _lineStart = loc[i].pt;
+     line[pNum]= new path (loc[i],null);
+    }
+   }
+  }
+  changeNotify(); 
   }
 
-  public void mouseReleased()
-  {
-   _lineStart = null;
-   _lineEnd = null;
-   changeNotify();  
-  }
+ 
   
-  public void mouseClicked()
+  public void mouseClicked(Point p,MouseEvent e)
   {
+    if (e.getClickCount() == 2) {
+    for (int i= 0 ; i<count;i++){
+     if (loc[i].pt!=null&&equalPoint(p,loc[i].pt)){
+      System.out.println("double clicked "+" already have "+p);
+
+      String str = JOptionPane.showInputDialog(null, "Name: "+loc[i].name+"\nx: "+loc[i].pt.x+"\ny: "+loc[i].pt.y+"\nid: "+loc[i].id+"\nYou can chaneg name of the location below", 
+        "properties of the location", 1);
+      loc[i].name=str;
+      return;
+     }
+
+    }
+
+   }
+  //}
+  if (MapEditor.mode==2){
+   for (int i= 0 ; i<count;i++){
+     if (loc[i].pt!=null&&equalPoint(p,loc[i].pt)){
+      
+      for (int n=0;n<pNum;n++){
+       if (line[n]._statPoint!=null&&line[n]._statPoint!=null){
+        if (line[n]._statPoint.id==loc[i].id){
+         line[n]._statPoint=null;
+        }
+         
+        if (line[n]._endPoint.id==loc[i].id){
+         line[n]._endPoint=null;
+        }
+       }
+      }
+      loc[i].pt=null;
+      break;
+     }
+    }
+  }
+  if (MapEditor.mode==4){
+   
+      
+      for (int n=0;n<pNum;n++){
+       if (line[n]._statPoint!=null&&line[n]._endPoint!=null){
+          double x1=(double)line[n]._statPoint.pt.x;
+          double y1=(double)line[n]._statPoint.pt.y;
+          double x2=(double)line[n]._endPoint.pt.x;
+          double y2=(double)line[n]._endPoint.pt.y;
+          double x=(double)p.x;
+          double y=(double)p.y;
+          double f=(x - x1) /(x2 - x1) ;
+          double t= (y - y1) / (y2 - y1);
+        
+        //float m=(line[n]._endPoint.pt.y-line[n]._statPoint.pt.y)/(line[n]._endPoint.pt.x-line[n]._statPoint.pt.x);
+        //float c=-(line[n]._statPoint.pt.x*m)+line[n]._statPoint.pt.y;
+        boolean xr=false;
+        boolean yr=false;
+        if (line[n]._statPoint.pt.x>line[n]._endPoint.pt.x){
+         if (line[n]._statPoint.pt.x>=p.x&&line[n]._endPoint.pt.x<=p.x)
+          xr=true;
+        }else{
+         if (line[n]._statPoint.pt.x<=p.x&&line[n]._endPoint.pt.x>=p.x)
+          xr=true;
+        }
+
+        if (line[n]._statPoint.pt.y>line[n]._endPoint.pt.y){
+         if (line[n]._statPoint.pt.y>=p.y&&line[n]._endPoint.pt.y<=p.y)
+          yr=true;
+        }else{
+         if (line[n]._statPoint.pt.y<=p.y&&line[n]._endPoint.pt.x>=p.y)
+          yr=true;
+        }
+        
+        //if (xr&&yr&&(Math.abs(p.y - (m * p.x + c))<=2)){
+        
+         double m = (y2 - y1) / (x2 - x1); // Slope
+                double c = y1-(m * x1) ; // Y intercept
+         if(Math.abs(y - (m * x + c))<=3&&xr&&yr){
+         line[n]._statPoint=null;
+         line[n]._endPoint=null;
+         changeNotify(); 
+         return;
+        }
+       }
+      }
+      
+  }
    changeNotify();
   }
-  
+   public boolean equalPoint(Point p1,Point p2){
+  int x = (int) p2.getX();
+  int y = (int) p2.getY();
+  int px = (int) p1.getX();
+  int py = (int) p1.getY();
+  int radius = SIZE/2;
+  return px > x - radius && px < x + radius && 
+   py > y - radius && py < y + radius;
+ }
   public void mouseDragged(Point p) {
     // Mark the end of the line
-    _lineEnd = p;
+    //_lineEnd = p;
+     if (MapEditor.mode==1){
+   if (_move!=-1){
+    loc[_move].pt.x=p.x;
+    loc[_move].pt.y=p.y;
+   }
+
+  }
+  if (MapEditor.mode==3){
+   _lineEnd = p;
+   // drawingPath=true;
+   /*for (int i= 0 ; i<count;i++){
+    if (equalPoint(p,loc[i].pt)&&_lineStart!=null&&_lineEnd!=null){
+     line[pNum]._lineStart=_lineStart;
+     line[pNum]._lineEnd=_lineEnd;
+     pNum++;
+     //drawingPath=false;
+     System.out.println("mouseReleased");
+     changeNotify();
+     return;
+    }
+   }*/
+
+   drawingPath=true;
+
+  }
+  // Mark the end of the line
     changeNotify(); // redraw the map
+  }
+   public void mouseReleased(Point p)
+  {
+  // _lineStart = null;
+   //_lineEnd = null;
+     if (MapEditor.mode==3){
+
+   for (int i= 0 ; i<count;i++){
+   if (loc[i].pt!=null&&equalPoint(p,loc[i].pt)){
+   line[pNum]._endPoint=loc[i];
+   pNum++;
+   drawingPath=false;
+   break;
+   }
+   }
+   System.out.println("mouseReleased");
+   
+   _lineEnd = null;
+   _lineStart = null;
+
+ // reset your variables
+ }
+   changeNotify();  
   }
 
   public int getWidth() { return _image.getWidth(null); }
