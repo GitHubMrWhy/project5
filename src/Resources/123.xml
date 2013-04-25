@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapfile bitmap="purdue-map.jpg" scale-feet-per-pixel="1.0">
+<location id="0" name="" x="287" y="305" />
+<location id="1" name="" x="400" y="223" />
+<location id="2" name="" x="294" y="435" />
+<location id="3" name="" x="450" y="362" />
+<path idfrom="0" idto="1" type="undirected" />
+<path idfrom="1" idto="0" type="undirected" />
+<path idfrom="1" idto="3" type="undirected" />
+<path idfrom="3" idto="1" type="undirected" />
+<path idfrom="3" idto="2" type="undirected" />
+<path idfrom="2" idto="3" type="undirected" />
+</mapfile>
