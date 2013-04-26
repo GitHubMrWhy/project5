@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mapfile bitmap="Resources/purdue-map.jpg" scale-feet-per-pixel="1.0">
+<mapfile bitmap="purdue-map.jpg" scale-feet-per-pixel="1.0">
 <location id="0" name="civl" x="1097" y="927" />
 <location id="1" name="phys" x="1162" y="931" />
 <location id="2" name="frny" x="1149" y="978" />
@@ -23,7 +23,6 @@
 <location id="20" name="wthr" x="1191" y="1179" />
 <location id="21" name="enad" x="1179" y="1097" />
 <location id="22" name="potr" x="1229" y="1110" />
-<location id="23" name="smth" x="999" y="1365" />
 <path idfrom="0" idto="1" type="undirected" />
 <path idfrom="1" idto="0" type="undirected" />
 <path idfrom="1" idto="3" type="undirected" />
@@ -81,5 +80,4 @@
 <path idfrom="21" idto="6" type="undirected" />
 <path idfrom="6" idto="21" type="undirected" />
 <path idfrom="22" idto="20" type="undirected" />
-<path idfrom="20" idto="22" type="undirected" />
 </mapfile>

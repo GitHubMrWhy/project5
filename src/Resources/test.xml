@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapfile bitmap="newyork.gif" scale-feet-per-pixel="50.0">
+<location id="0" name="null" x="86" y="81" />
+<location id="1" name="null" x="354" y="188" />
+<location id="2" name="null" x="191" y="363" />
+<location id="3" name="null" x="239" y="205" />
+<location id="4" name="null" x="554" y="240" />
+<location id="5" name="null" x="513" y="357" />
+<location id="6" name="null" x="326" y="376" />
+<location id="7" name="null" x="478" y="126" />
+</mapfile>

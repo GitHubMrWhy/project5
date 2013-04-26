@@ -65,13 +65,7 @@ public class MapEditor extends JFrame implements ActionListener
   private JTextField nameField;
   private JButton saveLocation;
   
-  //DEBUGGING MENU
-  //private JMenu debugMenu;
-  //private JMenuItem connectAllVertices;
-  //private JMenuItem sortPaths;
-  //private JMenuItem printPaths;
-  //private JMenuItem printVertices;
-  //private JMenuItem clearMap;
+
   public static JCheckBox printNames;
   
   //Session variables
@@ -172,7 +166,7 @@ public class MapEditor extends JFrame implements ActionListener
         clearMap();
         dir = fileChooser.getCurrentDirectory().getAbsolutePath();
         filePath = fileChooser.getSelectedFile().getAbsolutePath();
-        mapXML.openMap(filePath);
+       // mapXML.openMap(filePath);
         //mapXML.setBitmap(filePath);
         loadImage();
         saveAction.setEnabled(true);
@@ -326,75 +320,14 @@ public class MapEditor extends JFrame implements ActionListener
       points.remove(rightClicked);
       rightClicked = null;
       toBeRemoved = null;
-      map.mouseClicked();
+      //map.mouseClicked();
     }
     //Actions for edit location menu
     else if(evt.getSource().equals(saveLocation))
     {
       saveLocation();
     }
-    //DEBUGGING MENU
-    /*else if(evt.getSource().equals(connectAllVertices))
-    {
-      for(Vertex v : points)
-      {
-        for(Vertex other : points)
-        {
-          if(!other.equals(v))
-          {
-            Path tmp = new Path(v, other);
-            Path tmp2 = new Path(other, v); //PSUEDO-UNDIRECTED
-            boolean okay = true;
-            
-            for(Path p : paths)
-            {
-              if(p.equals(tmp))
-              {
-                okay = false;
-                break;
-              }
-            }
-            if(okay)
-            {
-              paths.add(tmp);
-              paths.add(tmp2);
-            }
-          }
-        }
-      }
-      map.mouseMoved();
-    }*/
-    /*else if(evt.getSource().equals(printPaths))
-    {
-      System.out.println("--Current Paths: " + System.currentTimeMillis() + "--");
-      for(Path p : paths)
-      {
-        System.out.println(p);
-      }
-      System.out.println("-----------------------------------");
-    }
-    else if(evt.getSource().equals(printVertices))
-    {
-      System.out.println("--Current Vertices: " + System.currentTimeMillis() + "--");
-      for(Vertex v : points)
-      {
-        System.out.println(v);
-      }
-      System.out.println("-----------------------------------");
-    }
-    else if(evt.getSource().equals(printNames))
-    {
-      map.mouseMoved();
-    }
-    else if(evt.getSource().equals(clearMap))
-    {
-      clearMap();
-    }
-    else if(evt.getSource().equals(sortPaths))
-    {
-      MapViewer holdup = new MapViewer();
-      holdup.sortPaths();
-    }*/
+  
     
   }
   
@@ -414,26 +347,14 @@ public class MapEditor extends JFrame implements ActionListener
   
   public void clearMap()
   {
-    ArrayList<Vertex> condemned_v = new ArrayList<Vertex>();
-    ArrayList<Path> condemned_p = new ArrayList<Path>();
-    for(Vertex v : points)
-    {
-      condemned_v.add(v);
-    }
-    for(Vertex v : condemned_v)
-    {
-      points.remove(v);
-    }
+    for (int i= 0 ; i<MapScene.count;i++){
+  if(MapScene.loc[i].pt!=null){
+     MapScene.loc[i].pt=null;
+    System.out.println(MapScene.loc[i].pt);
     
-    for(Path p : paths)
-    {
-      condemned_p.add(p);
+
+   }
     }
-    for(Path p : condemned_p)
-    {
-      paths.remove(p);
-    }
-    map.mouseMoved();
   }
   
   public void handleClose()
@@ -765,62 +686,17 @@ public class MapEditor extends JFrame implements ActionListener
     mapMenu.addSeparator();
     mapMenu.add(directionsAction);
     mapMenu.add(mstAction);
-    //mapMenu.add(displayPaths);
-    //mapMenu.add(displayVertices);
-    
-    //Menu items for directions menu:
-    /*directionsMenu = new JMenu("Directions");
-    directionsAction = new JMenuItem("Get Directions");
-    directionsAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-    mstAction = new JMenuItem("Calculate MST");
-    mstAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
-    directionsMenu.add(directionsAction);
-    directionsAction.addActionListener(this);
-    directionsMenu.add(mstAction);
-    mstAction.addActionListener(this);*/
-    
-    //Menu items for right-click menu:
-    
-    //edit_rightClick = new JMenuItem("Properties");
-    //edit_rightClick.addActionListener(this);
-    //delete_rightClick = new JMenuItem("Delete");
-    //delete_rightClick.addActionListener(this);
+   
     
     
     menubar.add(fileMenu);
     menubar.add(mapMenu);
     menubar.add(comboBox);
-    //menubar.add(directionsMenu);
-    //menubar.add(helpMenu);
     
-    
-    //DEBUGGING MENU
-    //debugMenu = new JMenu("Debug");
-    //connectAllVertices = new JMenuItem("Connect All Vertices");
-    //connectAllVertices.addActionListener(this);
-    //debugMenu.add(connectAllVertices);
-    //sortPaths = new JMenuItem("Sort Paths");
-    //sortPaths.addActionListener(this);
-    //debugMenu.add(sortPaths);
-    //printPaths = new JMenuItem("Print Paths");
-    //printPaths.addActionListener(this);
-    //printPaths.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
-    //debugMenu.add(printPaths);
-    //printVertices = new JMenuItem("Print Vertices");
-    //printVertices.addActionListener(this);
-    //debugMenu.add(printVertices);
-    //clearMap = new JMenuItem("Reset Map");
-    //clearMap.addActionListener(this);
-    //debugMenu.add(clearMap);
     printNames = new JCheckBox("Display Location Names");
     printNames.setSelected(false);
     printNames.addActionListener(this);
-    //debugMenu.add(printNames);
-    //menubar.add(debugMenu);
-    
-    
-    //popup.add(edit_rightClick);
-    //popup.add(delete_rightClick);
+  
     setJMenuBar(menubar);
     setLocationRelativeTo(null); 
     
@@ -843,266 +719,30 @@ public class MapEditor extends JFrame implements ActionListener
       public void mouseClicked(MouseEvent e)
       {
         
-        //JComboBox cb = (JComboBox)e.getSource();
-        //String modeName = (String)cb.getSelectedItem();
         
-        if(e.isMetaDown())
-        {
-          resetPaths();
+        
+   
+
           Point point = zoomPane.toViewCoordinates(e.getPoint());
-          boolean okay = false;
+    map.mouseClicked(point,e);
           
-          for(Vertex v : points)
-          {
-            if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-            {
-              rightClicked = v;
-              v.isSelected = true;
-              okay = true;
-              break;
-            }
-          }
-          
-          if(okay)
-          {
-            popup.show(e.getComponent(), e.getX(), e.getY());
-            okay = false;
-          }
-        }
-        else
-        {
-          if(e.getClickCount() == 2)
-          {
-            Point point = zoomPane.toViewCoordinates(e.getPoint());
-            boolean okay = false;
-            Vertex tmp = null;
-            
-            for(Vertex v : points)
-            {
-              if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-              {
-                tmp = v;
-                okay = true;
-                break;
-              }
-            }
-            
-            if(okay)
-            {
-              displayLocationFrame(tmp);
-              okay = false;
-            }
-          }
-          else if(e.getClickCount() == 1)
-          {
-            if(insertLocationMode.isSelected())
-            {
-              Point point = zoomPane.toViewCoordinates(e.getPoint());
-              boolean okay = true;
-              for(Vertex v : points)
-              {
-                if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-                {
-                  okay = false;
-                  break;
-                }
-              }
-              
-              if(okay)
-              {
-                //String name = JOptionPane.showInputDialog(null, "Name for this location?", "Add Location", JOptionPane.OK_CANCEL_OPTION);
-                //if(name != null && !name.equals(""))
-                //{
-                points.add(new Vertex("", (vertex_id++), (int)point.getX(), (int)point.getY()));
-                map.mouseClicked();
-                //}
-              }
-              
-              
-            }
-            else if(deleteLocationMode.isSelected())
-            {
-              Point point = zoomPane.toViewCoordinates(e.getPoint());
-              ArrayList<Path> toBeRemoved = new ArrayList<Path>();
-              
-              for(Vertex v : points)
-              {
-                if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-                {
-                  
-                  for(Path p : paths)
-                  {
-                    if(p.getStart().equals(v) || p.getEnd().equals(v))
-                    {
-                      toBeRemoved.add(p);
-                    }
-                  }
-                  
-                  points.remove(v);
-                  break;
-                }
-              }
-              
-              for(Path condemned : toBeRemoved)
-              {
-                paths.remove(condemned);
-              }
-              toBeRemoved = null;
-              map.mouseClicked();
-              
-            }
-            else if(deletePathMode.isSelected())
-            {
-              Path[] condemned = new Path[2];
-              for(int i = 0; i < paths.size(); i++)
-              {
-                if(paths.get(i).isSelected)
-                {
-                  condemned[0] = paths.get(i);
-                  condemned[1] = paths.get(i+1);
-                  break;
-                }
-              }
-              
-              if(condemned[0] != null && condemned[1] != null)
-              {
-                paths.remove(condemned[0]);
-                paths.remove(condemned[1]);
-              }
-              map.mouseClicked();
-            }
-          }
-        }
+        
       }
       public void mousePressed(MouseEvent e) 
       {
         //resetPaths();
-        if(!e.isMetaDown())
-        {
-          if(insertPathMode.isSelected())
-          {
-            Point point = zoomPane.toViewCoordinates(e.getPoint());
-            if(paths.size() > 0)
-            {
-              try
-              {
-                if(paths.get(paths.size() - 1).getEnd() == null)
-                {
-                  paths.remove(paths.size() - 1);
-                }
-              }
-              catch(Exception e2){}
-            }
-            for(Vertex v : points)
-            {
-              if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-              {
-                paths.add(new Path(v, null));
-                break;
-              }
-            }
-            map.mousePressed(point);
-          }
-          if(insertLocationMode.isSelected())
-          {
-            Point point = zoomPane.toViewCoordinates(e.getPoint());
-            for(Vertex v : points)
-            {
-              if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-              {
-                v.beingModified = true;
-              }
-              else
-              {
-                v.beingModified = false;
-              }
-            }
-          }
-        }
+      
+        Point point = zoomPane.toViewCoordinates(e.getPoint());
+    map.mousePressed(point);
+        
       }
       
       public void mouseReleased(MouseEvent e)
       {
-        if(insertPathMode.isSelected())
-        {
-          Point point = zoomPane.toViewCoordinates(e.getPoint());
-          for(Vertex v : points)
-          {
-            if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-            {
-              //Is the path to the same point (identity)?
-              if(!paths.get(paths.size() - 1).getStart().isThisMe(new Vertex(null, -1, point.x, point.y)))
-              {
-                //Does the past already exist?
-                boolean okay = true;
-                Path tmp = paths.get(paths.size() - 1);
-                tmp.setEnd(v);
-                
-                for(int i = 0; i < paths.size() - 1; i++)
-                {
-                  if(paths.get(i).equals(tmp))
-                  {
-                    okay = false;
-                    break;
-                  }
-                }
-                
-                if(okay)
-                {
-                  paths.get(paths.size() - 1).setEnd(v);
-                  paths.add(new Path(v, paths.get(paths.size() - 1).getStart())); //THIS ALLOWS PATHS TO BE PSUEDO-UNDIRECTED.
-                }
-                else
-                {
-                  paths.remove(paths.size() - 1);
-                }
-              }
-              else
-              {
-                paths.remove(paths.size() - 1);
-              }
-              break;
-            }
-          }
-          map.mouseReleased();
-        }
-        else if(insertLocationMode.isSelected())
-        {
-          Vertex check = null;
-          for(Vertex v : points)
-          {
-            if(v.beingModified == true)
-            {
-              check = v;
-              v.beingModified = false;
-            }
-          }
-          
-          if(check != null)
-          {
-            boolean okay = true;
-            for(Vertex v : points)
-            {
-              if(v.isThisMe(new Vertex(null, -1, check.getX(), check.getY())) && (!v.equals(check)))
-              {
-                okay = false;
-                break;
-              }
-            }
-            
-            if(okay)
-            {
-              check.update();
-              map.mouseReleased();
-            }
-            else
-            {
-              check.reset();
-              map.mouseReleased();
-            }
-            
-          }
-        }
+       
+           Point point = zoomPane.toViewCoordinates(e.getPoint());
+    map.mouseReleased(point);
+        
       }
       
       
@@ -1111,88 +751,16 @@ public class MapEditor extends JFrame implements ActionListener
     MouseMotionAdapter motionListener = new MouseMotionAdapter() {
       public void mouseDragged(MouseEvent e) 
       {
-        if(!e.isMetaDown())
-        {
-          if(insertPathMode.isSelected())
-          {
-            try
-            {
-              if(paths.get(paths.size() - 1).getEnd() == null)
-              {
-                Point point = zoomPane.toViewCoordinates(e.getPoint());
-                map.mouseDragged(point);
-              }
-            }
-            catch(Exception e2){}
-            
-          }
-          else if(insertLocationMode.isSelected())
-          {
-            Point point = zoomPane.toViewCoordinates(e.getPoint());
-            
-            for(Vertex v : points)
-            {
-              if(v.beingModified == true)
-              {
-                v.setX(point.x);
-                v.setY(point.y);
-                for(Path p : paths)
-                {
-                  if(p.getStart().equals(v) || p.getEnd().equals(v))
-                  {
-                    p.recalculateWeight();
-                  }
-                }
-                map.mouseMoved();
-                break;
-              }
-              
-            }
-          }
-        }
+       
+             Point point = zoomPane.toViewCoordinates(e.getPoint());
+    map.mouseDragged(point);
+        
         
       }
       
       public void mouseMoved(MouseEvent e)
       {
-        if(deletePathMode.isSelected())
-        {
-          Point point = zoomPane.toViewCoordinates(e.getPoint());
-          Rectangle2D.Double tolerance = new Rectangle2D.Double(point.x, point.y, TOLERANCE, TOLERANCE);
-          for(int i = 0; i < paths.size(); i+=2)
-          {
-            Path p = paths.get(i);
-            Line2D.Double bound = new Line2D.Double(p.getStart().getX(),p.getStart().getY(),p.getEnd().getX(),p.getEnd().getY());
-            if(bound.intersects(tolerance))
-            {
-              p.isSelected = true;
-              break;
-            }
-            else
-            {
-              p.isSelected = false;
-            }
-          }
-          map.mouseMoved();
-        }
         
-        if(deleteLocationMode.isSelected())
-        {
-          Point point = zoomPane.toViewCoordinates(e.getPoint());
-          for(Vertex v : points)
-          {
-            if(v.isThisMe(new Vertex(null, -1, point.x, point.y)))
-            {
-              v.isSelected = true;
-              break;
-            }
-            else
-            {
-              v.isSelected = false;
-            }
-          }
-          map.mouseMoved();
-        }
         
       }
       

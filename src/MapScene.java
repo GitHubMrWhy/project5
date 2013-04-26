@@ -52,12 +52,10 @@ public class MapScene implements Scene {
   int getWidth();
   int getHeight();
   void addChangeListener(ChangeListener listener);
-}
-  
+} 
   public MapScene(Image image) {
     _image = image;
   }
-
   public void setImage(Image image)
   {
    _image = image;
@@ -66,7 +64,7 @@ public class MapScene implements Scene {
  public static int pNum=0;
  private boolean drawingPath=false;
 
- public class path{
+ public static class path{
   //public Point _lineStart;
   public location _statPoint;
   public location _endPoint;
@@ -75,12 +73,9 @@ public class MapScene implements Scene {
   {
    this._statPoint=loc1;
    this._endPoint = loc2;
-
   } 
-
  }
-
- public class location {
+ public static class location {
   public Point pt;
   public String name;
   public int id;
@@ -89,19 +84,10 @@ public class MapScene implements Scene {
   {
    this.id=i;
    this.pt = p;
-
   } 
-
  }
-
- public void print(Point p) {
-
-
- }
-
  public static location[] loc = new location[1000];
  public static path [] line = new path[10000];
-
   /**
    * Call this method whenever something in the map has changed that
    * requires the map to be redrawn.
@@ -110,19 +96,15 @@ public class MapScene implements Scene {
     if (_listener != null) _listener.stateChanged(null);
   }
 
-
   /**
    * This method will draw the entire map.
    */
-  
   public void draw(Graphics2D g) {
     // Draw the map image
     g.drawImage(_image, 0, 0, null);
-
     //Update Lines
    // g.setColor(Color.BLUE);
-   // g.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-    
+   // g.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)); 
     if(directions)
     {
      g.setColor(Color.BLACK);
@@ -151,11 +133,8 @@ public class MapScene implements Scene {
 
    }
 
-
-   //}
  }
  g.setColor(Color.BLUE);
- 
     if (_lineStart != null && _lineEnd != null&&MapEditor.mode==3&&drawingPath) {
     g.drawLine(_lineStart.x, _lineStart.y, _lineEnd.x, _lineEnd.y);
 
@@ -165,11 +144,8 @@ public class MapScene implements Scene {
   if (line[i]._statPoint!=null&&line[i]._endPoint!=null){
    g.drawLine(line[i]._statPoint.pt.x, line[i]._statPoint.pt.y, line[i]._endPoint.pt.x, line[i]._endPoint.pt.y);
   }
- }
-    
+ }    
   }
-
-
   public void mouseMoved()
   {
     
@@ -182,7 +158,6 @@ public class MapScene implements Scene {
    directions = true;
    changeNotify();
   }
-  
   public void mstCalculated(double totalDistance)
   {
    this.totalDistance = totalDistance;
@@ -203,7 +178,6 @@ public class MapScene implements Scene {
      _move=i;
      return;
     }
-
    }
    loc[count] = new location (count,p);
 
